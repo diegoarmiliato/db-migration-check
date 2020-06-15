@@ -67,7 +67,9 @@ public class InitFrame extends javax.swing.JFrame {
         });
         txtFileName.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                FilePicker(evt);
+                if (evt.getClickCount() == 2) {
+                    FilePicker(evt);
+                }
             }
         });
 
@@ -136,9 +138,9 @@ public class InitFrame extends javax.swing.JFrame {
 
     private void FilePicker(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FilePicker
         if (txtFileName.isEnabled()) {
-            final FileNameExtensionFilter filter = new FileNameExtensionFilter("Text/Log Files", "txt", "log");
             final JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(filter);
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setAcceptAllFileFilterUsed(false);
             final int returnVal = fileChooser.showOpenDialog(null);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 final File file = fileChooser.getSelectedFile();
@@ -157,30 +159,32 @@ public class InitFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_FileNameFocusLost
 
     private void ValidateFile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ValidateFile
-        class MyWorker extends SwingWorker<String, Object> {
-            protected String doInBackground() {
-                chkLogFile.setEnabled(false);
-                txtFileName.setEnabled(false);
-                btnValidateFile.setEnabled(false);
-                jProgressBar1.setVisible(true);
-                jProgressBar1.setIndeterminate(true);
-                FileChecker flch = new FileChecker(new File(txtFileName.getText()));
-                try {
-                    flch.run();
-                } catch (IOException e) {
-                    logger.error(e);
+        if (btnValidateFile.isEnabled()) {
+            class MyWorker extends SwingWorker<String, Object> {
+                protected String doInBackground() {
+                    chkLogFile.setEnabled(false);
+                    txtFileName.setEnabled(false);
+                    btnValidateFile.setEnabled(false);
+                    jProgressBar1.setVisible(true);
+                    jProgressBar1.setIndeterminate(true);
+                    FileChecker flch = new FileChecker(new File(txtFileName.getText()));
+                    try {
+                        flch.run();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                    return "Done";
                 }
-                return "Done";
-            }
-            
-            protected void done() {
-                jProgressBar1.setVisible(false);
-                chkLogFile.setEnabled(true);
-                txtFileName.setEnabled(true);
-                btnValidateFile.setEnabled(true);
-            }
-        }    
-        new MyWorker().execute();
+                
+                protected void done() {
+                    jProgressBar1.setVisible(false);
+                    chkLogFile.setEnabled(true);
+                    txtFileName.setEnabled(true);
+                    btnValidateFile.setEnabled(true);
+                }
+            }    
+            new MyWorker().execute();
+        }
     }//GEN-LAST:event_ValidateFile
 
     /**
