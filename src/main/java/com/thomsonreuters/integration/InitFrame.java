@@ -1,16 +1,12 @@
 package com.thomsonreuters.integration;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.log4j.Logger;
 

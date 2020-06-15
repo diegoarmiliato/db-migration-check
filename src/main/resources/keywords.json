@@ -1,0 +1,12 @@
+{
+    "match": [
+        "ORA-",
+        "SP2-",
+        "timeout",
+        "ERRO"
+    ],
+    "ignore": [
+        "FNC_GET_ERRO",
+        "FNC_ERRO_PROBLEMA"
+    ]
+}
