@@ -1,5 +1,6 @@
 .project
 .classpath
+*.log
 /target
 /.settings
-*.log
+/.vscode
