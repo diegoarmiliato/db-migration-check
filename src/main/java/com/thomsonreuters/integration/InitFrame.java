@@ -136,7 +136,7 @@ public class InitFrame extends javax.swing.JFrame {
 
     private void FilePicker(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FilePicker
         if (txtFileName.isEnabled()) {
-            final FileNameExtensionFilter filter = new FileNameExtensionFilter("Text/Log Files", "txt", "log");           
+            final FileNameExtensionFilter filter = new FileNameExtensionFilter("Text/Log Files", "txt", "log");
             final JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(filter);
             final int returnVal = fileChooser.showOpenDialog(null);

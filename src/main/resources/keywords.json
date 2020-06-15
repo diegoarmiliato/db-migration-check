@@ -3,10 +3,12 @@
         "ORA-",
         "SP2-",
         "timeout",
-        "ERRO"
+        "ERRO",
+        "Installation"
     ],
     "ignore": [
         "FNC_GET_ERRO",
-        "FNC_ERRO_PROBLEMA"
+        "FNC_ERRO_PROBLEMA",
+        "Installation has finished"
     ]
 }
