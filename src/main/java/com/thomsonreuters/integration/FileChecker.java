@@ -22,23 +22,51 @@ import org.json.simple.parser.ParseException;
 public class FileChecker {
     
     private File[] files;
-    private Logger logger = Logger.getLogger(FileChecker.class);
+    private static final Logger logger = Logger.getLogger(FileChecker.class);
     private JSONObject keywords = new JSONObject();
-    public List<Integer> LogErrors = new ArrayList<Integer>();
+    private boolean errors = false;
+    
+    public static class LogErrors {
+        public String FileName;
+        public int LineSeq;
+        
+        public LogErrors(String FileName, int LineSeq) {
+            this.FileName = FileName;
+            this.LineSeq = LineSeq;
+        }
+    }
+    public List<LogErrors> LogErrors = new ArrayList<LogErrors>();
 
     // Class used to store the loaded files content
-    private class LoadedFiles {
-        private String FileName;
-        private int LineSeq;
-        private String LineTxt;
+    public static class LoadedFiles {
+        public String FileName;
+        public int LineSeq;
+        public String LineTxt;
+        public String LineStatus;
 
-        private LoadedFiles(String FileName, int LineSeq, String LineTxt) {
+        public LoadedFiles(String FileName, int LineSeq, String LineTxt) {
             this.FileName = FileName;
             this.LineSeq = LineSeq;
             this.LineTxt = LineTxt;
         }
+        
+        public LoadedFiles(String FileName, int LineSeq) {
+            this.FileName = FileName;
+            this.LineSeq = LineSeq;
+        }
     }
-    public ArrayList<LoadedFiles> LoadedFiles = new ArrayList<LoadedFiles>();
+    public List<LoadedFiles> LoadedFiles = new ArrayList<LoadedFiles>();
+    
+    public static class Files {
+        public String FileName;
+        public String FileStatus;
+        
+        public Files(String FileName, String FileStatus) {
+            this.FileName = FileName;
+            this.FileStatus = FileStatus;
+        }
+    }    
+    public List<Files> Files = new ArrayList<Files>();
 
     public FileChecker(File directory) {
         // Defines the filter for files to select as .TXT and .LOG
@@ -67,9 +95,12 @@ public class FileChecker {
     }
 
     public void run() throws IOException{
+        this.errors = false;
         // Reads listed files and load them into an ArrayList, avoiding to keep the file locked
         for (File file : files) {
             final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            Files flList = new Files(file.getName(), "S");            
+            Files.add(flList);
             int linNum = 1;
             String line;
             while ((line = br.readLine()) != null) {
@@ -95,11 +126,29 @@ public class FileChecker {
             for (int matchIdx = 0; matchIdx  < matches.size(); matchIdx++) {
                 final String match = matches.get(matchIdx).toString().toLowerCase();
                 if (line.contains(match)) {
-                    LogErrors.add(ldFile.LineSeq);
-                    System.out.println("File " + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
+                    if (!this.errors) { this.errors = true; }
+                    setFileWithError(ldFile.FileName);
+                    LogErrors.add(new LogErrors(ldFile.FileName, ldFile.LineSeq));
+                    ldFile.LineStatus = "E";
+                    LoadedFiles.set(i, ldFile);
+                    logger.debug("File " + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
                 }
             }
         }
+    }
+    
+    public void setFileWithError(String FileName) {
+        for (int i = 0; i < Files.size(); i++) {
+            final Files File = Files.get(i);
+            if (File.FileName.matches(FileName)) {
+                File.FileStatus = "E";
+                Files.set(i, File);
+            }
+        }
+    }
+    
+    public boolean hasErrors() {
+        return this.errors;
     }
 
     public static void main (String[] args) {
@@ -113,7 +162,7 @@ public class FileChecker {
             try {
                 filec.run();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
     }

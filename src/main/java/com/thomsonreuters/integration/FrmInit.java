@@ -5,17 +5,16 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.log4j.Logger;
 
-public class InitFrame extends javax.swing.JFrame {
+public class FrmInit extends javax.swing.JFrame {
     
-    private InitFrameController controller = new InitFrameController();
-    private Logger logger = Logger.getLogger(InitFrame.class);
+    private final Logger logger = Logger.getLogger(FrmInit.class);
 
-    public InitFrame() {
+    public FrmInit() {
         initComponents();
     }
 
@@ -67,9 +66,7 @@ public class InitFrame extends javax.swing.JFrame {
         });
         txtFileName.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    FilePicker(evt);
-                }
+                FilePicker(evt);
             }
         });
 
@@ -120,6 +117,7 @@ public class InitFrame extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void LogFileCheckHandler(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogFileCheckHandler
@@ -161,6 +159,7 @@ public class InitFrame extends javax.swing.JFrame {
     private void ValidateFile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ValidateFile
         if (btnValidateFile.isEnabled()) {
             class MyWorker extends SwingWorker<String, Object> {
+                @Override
                 protected String doInBackground() {
                     chkLogFile.setEnabled(false);
                     txtFileName.setEnabled(false);
@@ -170,12 +169,18 @@ public class InitFrame extends javax.swing.JFrame {
                     FileChecker flch = new FileChecker(new File(txtFileName.getText()));
                     try {
                         flch.run();
+                        if (flch.hasErrors()) {
+                            new FrmLogFile(flch.Files, flch.LoadedFiles, flch.LogErrors).setVisible(true);
+                        } else {
+                            JOptionPane.showConfirmDialog(null, "Log Files Validation was successful!","Log Files Validation", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
+                        }
                     } catch (IOException e) {
                         logger.error(e);
                     }
                     return "Done";
                 }
                 
+                @Override
                 protected void done() {
                     jProgressBar1.setVisible(false);
                     chkLogFile.setEnabled(true);
@@ -204,21 +209,20 @@ public class InitFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InitFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmInit().setVisible(true);
         });
     }
     
@@ -235,9 +239,9 @@ public class InitFrame extends javax.swing.JFrame {
                     }
                 });
             } catch (InterruptedException ex) {
-                java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvocationTargetException ex) {
-                java.util.logging.Logger.getLogger(InitFrame.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(FrmInit.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
