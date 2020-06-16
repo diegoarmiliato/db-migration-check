@@ -96,7 +96,7 @@ public class FileChecker {
                 final String match = matches.get(matchIdx).toString().toLowerCase();
                 if (line.contains(match)) {
                     LogErrors.add(ldFile.LineSeq);
-                    System.out.println("File" + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
+                    System.out.println("File " + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
                 }
             }
         }

@@ -4,11 +4,24 @@
         "SP2-",
         "timeout",
         "ERRO",
-        "Installation"
+        "compilation",
+        "NOK",
+        "end-of-file",
+        "not connected"
     ],
     "ignore": [
         "FNC_GET_ERRO",
         "FNC_ERRO_PROBLEMA",
-        "Installation has finished"
+        "PROC_IO_EXCLUI_ERRO_IMPORTACAO",
+        "PROC_IO_INFORMA_SUCESSO_ERRO",
+        "PROC_IO_INSERE_ERRO_IMPORTACAO",
+        "SFW_GET_ALL_ERRORS",
+        "SFW_ERROS_CERTIFICADO_DIGITAL",
+        "IO_ERROS_API",
+        "IO_ERROS_IMPORTACAO",
+        "SFW_LOG_ERRO_PTAX",
+        "GET_PROCESSA_ERROR_MSG",
+        "ERRO_CLASSIFICACAO_NCM",
+        "Raise_application_error(-20000,"
     ]
 }
