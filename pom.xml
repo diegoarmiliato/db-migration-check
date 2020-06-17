@@ -101,7 +101,7 @@
             </descriptorRefs>
             <archive>
                 <manifest>
-                    <mainClass>com.thomsonreuters.integration.FileChecker</mainClass>
+                    <mainClass>com.thomsonreuters.integration.FrmInit</mainClass>
                 </manifest>
             </archive>
         </configuration>
