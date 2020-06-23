@@ -2,12 +2,11 @@ package com.thomsonreuters.integration;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
 import org.apache.log4j.Logger;
 
 public class FrmInit extends javax.swing.JFrame {
@@ -176,9 +175,13 @@ public class FrmInit extends javax.swing.JFrame {
                     FileChecker flch = new FileChecker(new File(txtFileName.getText()));
                     try {
                         flch.run();
-                        if (flch.hasErrors()) {
-                            new FrmLogFile(frmInit, flch.Files, flch.LoadedFiles, flch.LogErrors).setVisible(true);
-                            frmInit.setVisible(false);
+                        if (flch.hasFiles()) {
+                            if (flch.hasErrors()) {
+                                new FrmLogFile(frmInit, flch.Files, flch.LoadedFiles, flch.LogErrors).setVisible(true);
+                                frmInit.setVisible(false);
+                            } else {
+                                JOptionPane.showConfirmDialog(null, "Log Files Validation was successful!","Log Files Validation", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
+                            }
                         } else {
                             JOptionPane.showConfirmDialog(null, "Log Files Validation was successful!","Log Files Validation", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
                         }

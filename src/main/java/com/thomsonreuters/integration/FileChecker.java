@@ -25,6 +25,7 @@ public class FileChecker {
     private static final Logger logger = Logger.getLogger(FileChecker.class);
     private JSONObject keywords = new JSONObject();
     private boolean errors = false;
+    private boolean hasFiles = false;
     
     public static class LogErrors {
         public String FileName;
@@ -96,8 +97,10 @@ public class FileChecker {
 
     public void run() throws IOException{
         this.errors = false;
+        this.hasFiles = false;
         // Reads listed files and load them into an ArrayList, avoiding to keep the file locked
         for (File file : files) {
+            if (!this.hasFiles) { this.hasFiles = true; }
             final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
             Files flList = new Files(file.getName(), "S");            
             Files.add(flList);
@@ -109,29 +112,31 @@ public class FileChecker {
             }
             br.close();
         }
-        
-        final JSONArray matches = (JSONArray) keywords.get("match");
-        final JSONArray ignores = (JSONArray) keywords.get("ignore");
+        // Only runs code below if there's any file to check at all
+        if (this.hasFiles) {
+            final JSONArray matches = (JSONArray) keywords.get("match");
+            final JSONArray ignores = (JSONArray) keywords.get("ignore");
 
-        for(int i = 0; i < LoadedFiles.size(); i++) {
-            final LoadedFiles ldFile = LoadedFiles.get(i);
-            String line = ldFile.LineTxt.toLowerCase();
-            for (int ignoreIdx = 0; ignoreIdx  < ignores.size(); ignoreIdx++) {
-                final String ignore = ignores.get(ignoreIdx).toString().toLowerCase();
-                if (line.contains(ignore)) {
-                    final String newLine = line.replace(ignore, "");
-                    line = newLine;
+            for(int i = 0; i < LoadedFiles.size(); i++) {
+                final LoadedFiles ldFile = LoadedFiles.get(i);
+                String line = ldFile.LineTxt.toLowerCase();
+                for (int ignoreIdx = 0; ignoreIdx  < ignores.size(); ignoreIdx++) {
+                    final String ignore = ignores.get(ignoreIdx).toString().toLowerCase();
+                    if (line.contains(ignore)) {
+                        final String newLine = line.replace(ignore, "");
+                        line = newLine;
+                    }
                 }
-            }
-            for (int matchIdx = 0; matchIdx  < matches.size(); matchIdx++) {
-                final String match = matches.get(matchIdx).toString().toLowerCase();
-                if (line.contains(match)) {
-                    if (!this.errors) { this.errors = true; }
-                    setFileWithError(ldFile.FileName);
-                    LogErrors.add(new LogErrors(ldFile.FileName, ldFile.LineSeq));
-                    ldFile.LineStatus = "E";
-                    LoadedFiles.set(i, ldFile);
-                    logger.debug("File " + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
+                for (int matchIdx = 0; matchIdx  < matches.size(); matchIdx++) {
+                    final String match = matches.get(matchIdx).toString().toLowerCase();
+                    if (line.contains(match)) {
+                        if (!this.errors) { this.errors = true; }
+                        setFileWithError(ldFile.FileName);
+                        LogErrors.add(new LogErrors(ldFile.FileName, ldFile.LineSeq));
+                        ldFile.LineStatus = "E";
+                        LoadedFiles.set(i, ldFile);
+                        logger.debug("File " + ldFile.FileName + " - Line " + ldFile.LineSeq + ": " + ldFile.LineTxt); 
+                    }
                 }
             }
         }
@@ -149,6 +154,10 @@ public class FileChecker {
     
     public boolean hasErrors() {
         return this.errors;
+    }
+
+    public boolean hasFiles() {
+        return this.hasFiles;
     }
 
     public static void main (String[] args) {

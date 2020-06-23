@@ -1,12 +1,8 @@
 package com.thomsonreuters.integration;
 
-import com.thomsonreuters.integration.FileChecker.LoadedFiles;
-import com.thomsonreuters.integration.FileChecker.Files;
-import com.thomsonreuters.integration.FileChecker.LogErrors;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,17 +10,19 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultHighlighter;
+
+import com.thomsonreuters.integration.FileChecker.Files;
+import com.thomsonreuters.integration.FileChecker.LoadedFiles;
+import com.thomsonreuters.integration.FileChecker.LogErrors;
+
 import org.apache.log4j.Logger;
 
 public class FrmLogFile extends javax.swing.JFrame {
@@ -152,8 +150,9 @@ public class FrmLogFile extends javax.swing.JFrame {
                 area.append(text.toString());
                 area.setName(File.FileName);
                 area.setCaretPosition(0);
+                area.setEditable(false);
                 final TextLineNumber textLineNumber = new TextLineNumber(area);
-                final LinePainter linePainter = new LinePainter(area);
+                new LinePainter(area);
                 LogErrors.forEach(LogError -> {
                     if (LogError.FileName.matches(File.FileName)) {
                         try {
